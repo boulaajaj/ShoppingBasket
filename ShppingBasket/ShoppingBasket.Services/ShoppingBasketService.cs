@@ -12,9 +12,10 @@ namespace ShoppingBasket.Services
     {
         IOrder _order;
 
-        public void SetOrder(IOrder order)
+        public ShoppingBasketService SetOrder(IOrder order)
         {
             _order = order;
+            return this;
         }
 
         public void PrintReceiptDetails()

@@ -16,6 +16,6 @@ namespace ShoppingBasket.Services
         decimal GetProductTaxedPrice(Product product);
         decimal GetProductTaxRate(Product product);
         void PrintReceiptDetails();
-        void SetOrder(IOrder order);
+        ShoppingBasketService SetOrder(IOrder order);
     }
 }

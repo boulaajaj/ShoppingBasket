@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShoppingBasket.Domain.Models;
 using ShoppingBasket.Services;
+using ShoppingBasket.Services.Tests.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,56 +16,95 @@ namespace ShoppingBasket.Services.Tests
         [TestInitialize]
         public void Initialize()
         {
+            //to be init
+        }
 
+
+        [TestMethod()]
+        public void GetProductTaxRate_GivenProductIsExemptAndNotImported_ExpectingZeroTaxRate()
+        {
+            //arrage
+            var order = new Order()
+            {
+                TaxRules = new TaxRules()
+                {
+                    BasicRate = 0.10M,
+                    ExemptProductTypes = new List<string> { "book", "food", "medical" },
+                    ImportRate = 0.05M
+                }
+            };
+            var product = new Product
+            {
+                IsImported = false,
+                Type = "food"
+            };
+
+            //act
+            var sb = new ShoppingBasketService();
+            var result = sb.SetOrder(order).GetProductTaxRate(product);
+
+            //assert
+            Assert.AreEqual(0.00M, result);
         }
 
         [TestMethod()]
-        public void GetOrderLineItemFromProductTest()
+        public void GetProductTaxRate_GivenProductIsNotExemptAndIsImported_ExpectingMaximumTaxRate()
         {
             //arrage
-            
+            var order = new Order()
+            {
+                TaxRules = new TaxRules()
+                {
+                    BasicRate = 0.15M,
+                    ExemptProductTypes = new List<string> { "book", "food", "medical" },
+                    ImportRate = 0.05M
+                }
+            };
+            var product = new Product
+            {
+                IsImported = true,
+                Type = "transport"
+            };
+
             //act
+            var sb = new ShoppingBasketService();
+            var result = sb.SetOrder(order).GetProductTaxRate(product);
 
             //assert
-            Assert.Fail();
+            Assert.AreEqual(0.20M, result);
         }
 
-        static TaxRules GetStateTaxRules()
+        [TestMethod]
+        public void TaxRules_GivenTheCetsToRoundUpByAreOutOfValidRange_ExpectingModelError()
         {
-            return new TaxRules()
+            //arrage
+            var taxRules = new TaxRules()
             {
-                BasicRate = 0.10M,
-                ExemptProductTypes = new List<string> { "book", "food", "medical" },
-                CentsToRoundUpBy = 5,
-                ImportRate = 0.05M
+                CentsToRoundUpBy = 55
             };
+
+            //act
+            var results = ModelValidationHelper.Validate(taxRules);
+
+            //assert
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual("CentsToRoundUpBy cannot be greater than 9 or less than 0.", results[0].ErrorMessage);
         }
 
-        static IEnumerable<Product> GetProductsFromInput1()
+        [TestMethod]
+        public void TaxRules_GivenTheCetsToRoundUpByIsWithinRange_ExpectingValidModel()
         {
-            return new List<Product> {
-            new Product {
-                Quantity = 1,
-                Name ="book",
-                Price = 12.49M,
-                IsImported = false,
-                Type = "book"
-            },
-            new Product {
-                Quantity = 1,
-                Name ="music CD",
-                Price = 14.99M,
-                IsImported = false,
-                Type = "music"
-            },
-            new Product {
-                Quantity = 1,
-                Name = "chocolate bar",
-                Price = 0.85M,
-                IsImported = false,
-                Type = "food"
-            }
-        };
+            //arrage
+            var taxRules = new TaxRules()
+            {
+                CentsToRoundUpBy = 5
+            };
+
+            //act
+            var results = ModelValidationHelper.Validate(taxRules);
+
+            //assert
+            Assert.AreEqual(0, results.Count);
         }
     }
 }
