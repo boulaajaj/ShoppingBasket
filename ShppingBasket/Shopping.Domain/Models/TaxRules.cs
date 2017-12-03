@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ShoppingBasket.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingBasket.Domain.Models
 {
-    public class TaxRules
+    public class TaxRules : ITaxRules
     {
         public decimal BasicRate { get; set; }
         public IEnumerable<string> ExemptProductTypes { get; set; }

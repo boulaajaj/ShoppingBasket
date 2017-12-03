@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ShoppingBasket.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace ShoppingBasket.Domain.Models
 {
-    public class Product
+    public class Product : IProduct
     {
         public string Name { get; set; }
         public string Type { get; set; }

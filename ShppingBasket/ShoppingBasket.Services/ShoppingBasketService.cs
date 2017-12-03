@@ -32,11 +32,7 @@ namespace ShoppingBasket.Services
                 _order.Products.Select(p => GetOrderLineItemFromProduct(p)));
         }
 
-        public string GetOrderLineItemFromProduct(Product product)
-        {
-            return $"{product.Quantity} {product.Name}: {GetProductTaxedPrice(product)}";
-        }
-
+       
         public decimal GetOrderTotal()
         {
             return _order.Products.Sum(p => GetProductTaxedPrice(p));
@@ -48,7 +44,12 @@ namespace ShoppingBasket.Services
                 - _order.Products.Sum(p => p.Quantity * p.Price);
         }
 
-        public decimal GetProductTaxedPrice(Product product)
+        public string GetOrderLineItemFromProduct(IProduct product)
+        {
+            return $"{product.Quantity} {product.Name}: {GetProductTaxedPrice(product)}";
+        }
+
+        public decimal GetProductTaxedPrice(IProduct product)
         {
             return ApplyRoundingToAmount(
                 GetProductSalesTax(product) 
@@ -56,7 +57,7 @@ namespace ShoppingBasket.Services
                 _order.TaxRules.CentsToRoundUpBy);
         }
 
-        public decimal GetProductSalesTax(Product product)
+        public decimal GetProductSalesTax(IProduct product)
         {
             return ApplyRoundingToAmount(
                 (product.Price * product.Quantity) 
@@ -64,7 +65,7 @@ namespace ShoppingBasket.Services
                 _order.TaxRules.CentsToRoundUpBy);
         }
 
-        public decimal GetProductTaxRate(Product product)
+        public decimal GetProductTaxRate(IProduct product)
         {
             return GetBasicTaxRate(product.Type)
                 + GetImportTaxRate(product.IsImported);

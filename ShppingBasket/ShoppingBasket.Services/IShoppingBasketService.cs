@@ -8,13 +8,13 @@ namespace ShoppingBasket.Services
         decimal ApplyRoundingToAmount(decimal amount, short centsToRoundUpBy);
         string GetAllOrderLineItems();
         decimal GetBasicTaxRate(string productType);
-        decimal GetImportTaxRate(bool isImported);
-        string GetOrderLineItemFromProduct(Product product);
+        decimal GetImportTaxRate(bool isImported);        
         decimal GetOrderSalesTax();
         decimal GetOrderTotal();
-        decimal GetProductSalesTax(Product product);
-        decimal GetProductTaxedPrice(Product product);
-        decimal GetProductTaxRate(Product product);
+        string GetOrderLineItemFromProduct(IProduct product);
+        decimal GetProductSalesTax(IProduct product);
+        decimal GetProductTaxedPrice(IProduct product);
+        decimal GetProductTaxRate(IProduct product);
         void PrintReceiptDetails();
         ShoppingBasketService SetOrder(IOrder order);
     }

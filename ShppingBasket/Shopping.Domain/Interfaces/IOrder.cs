@@ -5,7 +5,7 @@ namespace ShoppingBasket.Domain.Interfaces
 {
     public interface IOrder
     {
-        IEnumerable<Product> Products { get; set; }
-        TaxRules TaxRules { get; set; }
+        IEnumerable<IProduct> Products { get; set; }
+        ITaxRules TaxRules { get; set; }
     }
 }
